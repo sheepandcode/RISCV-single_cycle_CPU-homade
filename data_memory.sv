@@ -3,20 +3,27 @@ module data_mem (
     input logic [31:0] result,
     input logic [31:0] read_data_2,
     input logic mem_write,
+    input logic mem_read,
 
-    output logic read_data
+    output logic [31:0] read_data
 );
     logic [31:0] mem [0:255];
+    integer i;
 
     always_comb begin : read_logic
-        if(mem_write == 1'b0) 
-            read_data = read_data_2;
+        if(mem_read) 
+            read_data = mem[result[31:2]];
         else
             read_data = 32'd0;
     end
 
     always_ff @( posedge clk or negedge nrst ) begin : write_data 
-        if(mem_write == 1'b1)
-            mem[result] <= read_data_2;
+        if(!nrst) begin
+            for(i = 0; i < 256; i++)
+                mem[i] <= 32'd0;
+        end
+        else if(mem_write) begin
+            mem[result[31:2]] <= read_data_2;
+        end
     end
 endmodule
