@@ -3,20 +3,17 @@
 */
 module program_counter (
     input logic clk, nrst,
-    input logic [1:0] pc_select,
-    input logic [31:0] branch_addr,
-    input logic [31:0] jump_addr,
+    input logic pc_src,
+    input logic [31:0] imm_addr,
 
     output logic [31:0] pc_addr
 );
     logic [31:0] addr_reg;
 
     always_comb begin
-        addr_reg = pc_addr;
-        case(pc_select) 
-            2'b0: addr_reg = pc_addr + 32'd4;
-            2'd1: addr_reg = branch_addr;
-            2'd2: addr_reg = jump_addr;
+        case(pc_src) 
+            1'b0: addr_reg = pc_addr + 32'd4;
+            1'b1: addr_reg = pc_addr + imm_addr;
             default: addr_reg = pc_addr + 32'd4;
         endcase
     end
