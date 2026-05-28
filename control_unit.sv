@@ -42,7 +42,7 @@ module control_unit (
                 endcase
             end
             7'b0010011: begin //I type (addi)
-                wwrite_en  = 1'b1;
+                write_en  = 1'b1;
                 alu_src = 1'b1;
                 alu_control= 3'd0;
                 imm_src = 2'b00;

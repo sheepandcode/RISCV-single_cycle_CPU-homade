@@ -28,7 +28,7 @@ module top #() (
     logic [31:0] read_data;
     //result mux
     logic result_src;
-    
+
     program_counter program_counter(
         .clk(clk),
         .nrst(nrst),
@@ -76,7 +76,7 @@ module top #() (
         .zero_out(zero)
     );
 
-    data_memory data_memory(
+    data_mem data_mem(
         .clk(clk),
         .nrst(nrst),
         .result(result),
