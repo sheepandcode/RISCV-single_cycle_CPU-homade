@@ -15,7 +15,7 @@ module top #(
     logic [31:0] read_data_2;
     //immediate gen
     logic imm_src;
-    logic [31:0] imm_ext;
+    //logic [31:0] imm_ext;
     //alu mux
     logic alu_src;
     logic src_B;
@@ -56,13 +56,13 @@ module top #(
     imm_gen(
         .instruction(instruction),
         .imm_src(imm_src),
-        .imm_ext(imm_ext)
+        .imm_ext(imm_addr)
     );
 
     alu_mux(
         .alu_src(alu_src),
         .read_data_2(read_data_2),
-        .imm_ext(imm_ext),
+        .imm_ext(imm_addr),
         .src_B(src_B)
     );
 
