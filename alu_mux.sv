@@ -5,5 +5,5 @@ module alu_mux (
 
     output logic [31:0] src_B
 );
-    assign src_B = (alu_src) ? read_data_2 : imm_ext;
+    assign src_B = (alu_src) ? imm_ext : read_data_2;
 endmodule

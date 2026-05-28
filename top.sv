@@ -1,11 +1,10 @@
-module top #(
-    parameters
-) (
+module top #() (
     input logic clk, nrst,
 );
     //program counter
     logic [31:0] imm_addr;
     logic [31:0] pc_addr;
+    logic pc_src;
     //instruction mem
     logic [31:0] instruction;
     //register file
@@ -14,11 +13,11 @@ module top #(
     logic [31:0] read_data_1;
     logic [31:0] read_data_2;
     //immediate gen
-    logic imm_src;
+    logic [1:0] imm_src;
     //logic [31:0] imm_ext;
     //alu mux
     logic alu_src;
-    logic src_B;
+    logic [31:0] src_B;
     //alu
     logic [2:0] alu_control;
     logic [31:0] result;
@@ -27,20 +26,23 @@ module top #(
     logic mem_read;
     //data memory
     logic [31:0] read_data;
-
-    program_counter(
+    //result mux
+    logic result_src;
+    
+    program_counter program_counter(
         .clk(clk),
         .nrst(nrst),
+        .pc_src(pc_src),
         .imm_addr(imm_addr),
         .pc_addr(pc_addr)
     );
 
-    inst_mem(
+    inst_mem inst_mem(
         .pc_addr(pc_addr),
         .instruction(instruction)
     );
 
-    reg_file(
+    reg_file reg_file(
         .clk(clk),
         .nrst(nrst),
         .rs1_addr(instruction[19:15]),
@@ -53,20 +55,20 @@ module top #(
         .read_data_2(read_data_2)
     );
 
-    imm_gen(
+    imm_gen imm_gen(
         .instruction(instruction),
         .imm_src(imm_src),
         .imm_ext(imm_addr)
     );
 
-    alu_mux(
+    alu_mux alu_mux(
         .alu_src(alu_src),
         .read_data_2(read_data_2),
         .imm_ext(imm_addr),
         .src_B(src_B)
     );
 
-    alu(
+    alu alu(
         .src_A(read_data_1),
         .src_B(src_B),
         .alu_control(alu_control),
@@ -74,7 +76,7 @@ module top #(
         .zero_out(zero)
     );
 
-    data_memory(
+    data_memory data_memory(
         .clk(clk),
         .nrst(nrst),
         .result(result),
@@ -84,7 +86,14 @@ module top #(
         .read_data(read_data)
     );
 
-    control_unit(
+    result_mux result_mux(
+        .result(result),
+        .read_data(read_data),
+        .result_src(result_src),
+        .write_data(write_data)
+    );
+
+    control_unit control_unit(
         .op_code(instruction[6:0]),
         .funct3(instruction[14:12]),
         .funct7(instruction[31:25]),
