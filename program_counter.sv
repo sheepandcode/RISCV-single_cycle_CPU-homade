@@ -6,11 +6,13 @@ module program_counter (
     input logic pc_src,
     input logic [31:0] imm_addr,
 
+    output logic [31:0] pc_plus_4,
     output logic [31:0] pc_addr
 );
     logic [31:0] addr_reg;
 
     always_comb begin
+        pc_plus_4 = pc_addr + 32'd4;
         case(pc_src) 
             1'b0: addr_reg = pc_addr + 32'd4;
             1'b1: addr_reg = pc_addr + imm_addr;

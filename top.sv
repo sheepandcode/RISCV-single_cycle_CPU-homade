@@ -1,5 +1,5 @@
-module top #() (
-    input logic clk, nrst,
+module top (
+    input logic clk, nrst
 );
     //program counter
     logic [31:0] imm_addr;
@@ -27,14 +27,17 @@ module top #() (
     //data memory
     logic [31:0] read_data;
     //result mux
-    logic result_src;
+    logic [1:0] result_src;
+    //
+    logic [31:0] pc_plus_4;
 
     program_counter program_counter(
         .clk(clk),
         .nrst(nrst),
         .pc_src(pc_src),
         .imm_addr(imm_addr),
-        .pc_addr(pc_addr)
+        .pc_addr(pc_addr),
+        .pc_plus_4(pc_plus_4)
     );
 
     inst_mem inst_mem(
@@ -89,6 +92,7 @@ module top #() (
     result_mux result_mux(
         .result(result),
         .read_data(read_data),
+        .pc_plus_4(pc_plus_4),
         .result_src(result_src),
         .write_data(write_data)
     );

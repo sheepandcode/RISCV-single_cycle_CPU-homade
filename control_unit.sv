@@ -11,23 +11,23 @@ module control_unit (
     output logic alu_src,
     output logic [1:0] imm_src,
     output logic write_en,
-    output logic result_src
+    output logic [1:0] result_src
 );
 
     always_comb begin 
         write_en = 1'b0;
         imm_src = 2'b0;
         alu_src = 1'b0;
-        alu_control = 3'b0;
+        alu_control = 3'd0;
         mem_read = 1'b0;
         mem_write = 1'b0;
         pc_src = 1'b0;
-        result_src = 1'b0;
+        result_src = 2'b00;
         case (op_code)
             7'b0110011: begin //R-type
                 write_en = 1'b1;
                 alu_src = 1'b0;
-                result_src = 1'b0;
+                result_src = 2'b00;
                 case (funct3)
                     3'b000: begin
                     if(funct7 == 7'd0)
@@ -46,7 +46,7 @@ module control_unit (
                 alu_src = 1'b1;
                 alu_control= 3'd0;
                 imm_src = 2'b00;
-                result_src = 1'b0;
+                result_src = 2'b00;
             end
             7'b0000011: begin //lw
                 write_en = 1'b1;
@@ -54,7 +54,7 @@ module control_unit (
                 alu_control = 3'd0;
                 mem_read = 1'b1;
                 imm_src = 2'b00;
-                result_src = 1'b1;
+                result_src = 2'b01;
             end
             7'b0100011: begin //sw
                 alu_src = 1'b1;
@@ -71,12 +71,13 @@ module control_unit (
                 pc_src = 1'b1;
                 write_en = 1'b1;
                 imm_src = 2'b11;
+                result_src = 2'b10;
             end
             default: begin //R-type
-                write_en = 1'b1;
+                write_en = 1'b0;
                 alu_src = 1'b0;
-                alu_control = 3'b001;
-                result_src = 1'b0;
+                alu_control = 3'b000;
+                result_src = 2'b00;
             end
         endcase
     end
