@@ -7,7 +7,7 @@ module inst_mem (
     initial begin
         $readmemh("program.hex", mem);
     end
-    //each instruction contains 4 entries; combining 4 "blocks" of memory create a 32-bit instruction 
+    //each instruction contains 4 entries; combining 4 "blocks" of memory creates a 32-bit instruction 
     assign instruction = {mem[pc_addr+3], mem[pc_addr+2], mem[pc_addr+1], mem[pc_addr]};
 
 endmodule
