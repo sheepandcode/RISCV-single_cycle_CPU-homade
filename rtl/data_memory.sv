@@ -12,7 +12,7 @@ module data_mem (
 
     always_comb begin : read_logic
         if(mem_read) 
-            read_data = mem[result[31:2]];
+            read_data = mem[result[9:2]];
         else
             read_data = 32'd0;
     end
@@ -20,10 +20,10 @@ module data_mem (
     always_ff @( posedge clk or negedge nrst ) begin : write_data 
         if(!nrst) begin
             for(i = 0; i < 256; i++)
-                mem[i] <= 32'd0;
+                mem[i] = 32'd0;
         end
         else if(mem_write) begin
-            mem[result[31:2]] <= read_data_2;
+            mem[result[9:2]] <= read_data_2;
         end
     end
 endmodule

@@ -17,8 +17,8 @@ module alu (
             3'd2: result = src_A & src_B; //AND
             3'd3: result = src_A | src_B; //OR
             3'd4: result = src_A ^ src_B; //XOR
-            3'd5: result = src_A << src_B[4:0]; //SLL
-            3'd6: result = src_A >> src_B[4:0]; //SRL
+            //3'd5: result = src_A << src_B[4:0]; //SLL
+            //3'd6: result = src_A >> src_B[4:0]; //SRL
             default: result = 32'd0;
         endcase
         zero_out = (result == 32'd0);
