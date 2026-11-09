@@ -1,3 +1,4 @@
+// Select the value written to rd: ALU result, loaded word, or JAL return address.
 module result_mux (
     input logic [31:0] result,
     input logic [31:0] read_data,

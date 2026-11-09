@@ -1,3 +1,5 @@
+// Decode the implemented subset: ADD/SUB/AND/OR/XOR, ADDI, LW, SW, BEQ, JAL.
+// ADDI, load, store, and branch opcodes are not further qualified by funct3.
 module control_unit (
     input logic [6:0] op_code,
     input logic [2:0] funct3,
@@ -14,7 +16,12 @@ module control_unit (
     output logic [1:0] result_src
 );
 
+    // Encodings shared with the immediate generator, ALU, and writeback mux:
+    // imm_src: 00 = I, 01 = S, 10 = B, 11 = J.
+    // alu_control: 0 = ADD, 1 = SUB, 2 = AND, 3 = OR, 4 = XOR.
+    // result_src: 00 = ALU, 01 = memory, 10 = PC+4.
     always_comb begin 
+        // Defaults disable state writes and advance PC by 4 for unknown opcodes.
         write_en = 1'b0;
         imm_src = 2'b0;
         alu_src = 1'b0;
@@ -33,7 +40,7 @@ module control_unit (
                     if(funct7 == 7'd0)
                         alu_control = 3'd0; //ADD
                     else if(funct7 == 7'b0100000)
-                        alu_control = 3'd1; //SUBSTRACT 
+                        alu_control = 3'd1; //SUB
                     end
                     3'b111: alu_control = 3'd2; //AND
                     3'b110: alu_control = 3'd3; //OR
@@ -48,6 +55,7 @@ module control_unit (
                 imm_src = 2'b00;
                 result_src = 2'b00;
             end
+            // Loads/stores use rs1 + signed immediate as the byte address.
             7'b0000011: begin //lw
                 write_en = 1'b1;
                 alu_src = 1'b1;
@@ -65,15 +73,17 @@ module control_unit (
             7'b1100011: begin //beq
                 alu_control = 3'd1;
                 imm_src = 2'b10;
+                // Take BEQ only when rs1 - rs2 is zero.
                 pc_src = zero;
             end
+            // JAL always redirects the PC and writes the return address to rd.
             7'b1101111: begin //jal
                 pc_src = 1'b1;
                 write_en = 1'b1;
                 imm_src = 2'b11;
                 result_src = 2'b10;
             end
-            default: begin //R-type
+            default: begin //Unrecognized opcode: no register or memory write
                 write_en = 1'b0;
                 alu_src = 1'b0;
                 alu_control = 3'b000;

@@ -1,3 +1,4 @@
+// 32 registers with two combinational read ports and one clocked write port.
 module reg_file (
     input logic clk, nrst,
     input logic [4:0] rs1_addr, //A1
@@ -18,12 +19,14 @@ module reg_file (
 
     end
 
+    // Asynchronous active-low reset clears all registers.
     always_ff @( posedge clk or negedge nrst ) begin
         if(!nrst) begin
             for(i = 0; i < 32; i++)
                 regs[i] <= 32'd0;
         end
         else begin
+            // x0 is hardwired to zero: discard writes to it and keep it cleared.
             if(write_en && write_addr != 5'd0) 
                 regs[write_addr] <= write_data;
             regs[0] <= 32'd0;

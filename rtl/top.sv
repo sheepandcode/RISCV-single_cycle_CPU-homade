@@ -1,7 +1,9 @@
+// Single-cycle datapath: fetch, decode, execute, memory read, and writeback
+// are combinational between rising edges; PC/register/store updates are clocked.
 module top (
     input logic clk, nrst
 );
-    //program counter
+    // PC control and sign-extended immediate (offset shared with the ALU).
     logic [31:0] imm_addr;
     logic [31:0] pc_addr;
     logic pc_src;
@@ -28,7 +30,7 @@ module top (
     logic [31:0] read_data;
     //result mux
     logic [1:0] result_src;
-    //
+    // Sequential PC and return address used by JAL.
     logic [31:0] pc_plus_4;
 
     program_counter program_counter(
@@ -45,6 +47,7 @@ module top (
         .instruction(instruction)
     );
 
+    // Instruction fields: rs1 = [19:15], rs2 = [24:20], rd = [11:7].
     reg_file reg_file(
         .clk(clk),
         .nrst(nrst),
@@ -79,6 +82,7 @@ module top (
         .zero_out(zero)
     );
 
+    // Stores use the original rs2 value, independent of ALU operand selection.
     data_mem data_mem(
         .clk(clk),
         .nrst(nrst),

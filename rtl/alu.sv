@@ -1,6 +1,4 @@
-/*
-Instructions: R-type, I-type, Branch, Jump, Load/stores 
-*/
+// Combinational ALU for arithmetic, logic, address calculation, and BEQ comparison.
 module alu (
     input logic [31:0] src_A,
     input logic [31:0] src_B,
@@ -21,6 +19,7 @@ module alu (
             //3'd6: result = src_A >> src_B[4:0]; //SRL
             default: result = 32'd0;
         endcase
+        // Subtraction produces zero when the two BEQ operands are equal.
         zero_out = (result == 32'd0);
 
     end

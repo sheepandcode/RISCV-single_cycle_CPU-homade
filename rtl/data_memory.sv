@@ -1,3 +1,4 @@
+// 256-word memory: combinational reads, clocked writes, asynchronous active-low reset.
 module data_mem (
     input logic clk, nrst,
     input logic [31:0] result,
@@ -7,9 +8,12 @@ module data_mem (
 
     output logic [31:0] read_data
 );
+    // ALU byte addresses use bits [9:2] as the word index.
+    // Low two bits and upper address bits are ignored; no alignment/range checks.
     logic [31:0] mem [0:255];
     integer i;
 
+    // Disabled reads return zero rather than the addressed word.
     always_comb begin : read_logic
         if(mem_read) 
             read_data = mem[result[9:2]];

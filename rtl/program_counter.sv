@@ -1,6 +1,4 @@
-/*
-    Support PC+4, branch, jump target
-*/
+// PC register with sequential and PC-relative branch/jump paths.
 module program_counter (
     input logic clk, nrst,
     input logic pc_src,
@@ -11,6 +9,8 @@ module program_counter (
 );
     logic [31:0] addr_reg;
 
+    // imm_addr is a signed, extended offset, not an absolute target address.
+    // pc_src selects PC+4 (0) or the current PC plus that offset (1).
     always_comb begin
         pc_plus_4 = pc_addr + 32'd4;
         case(pc_src) 
@@ -20,6 +20,7 @@ module program_counter (
         endcase
     end
 
+    // Asynchronous active-low reset starts execution at byte address zero.
     always_ff @( posedge clk or negedge nrst ) begin
         if(!nrst) begin
             pc_addr <= 32'd0;
